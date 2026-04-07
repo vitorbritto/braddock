@@ -18,7 +18,7 @@ Your mission is to initialize the project and prepare the squad for execution.
 
 1. Read the files above and understand the product context
 2. Verify that all memory artifacts exist (create any that are missing)
-3. Record in memory/status.md that the project has been initialized
+3. Record in ./braddock/memory/status.md that the project has been initialized
 4. Confirm the current project state
 5. Indicate the next step: /create-prd
 
@@ -26,7 +26,7 @@ Your mission is to initialize the project and prepare the squad for execution.
 
 - Never skip steps in the pipeline
 - Never implement code before an approved PRD and spec exist
-- Never assume a business rule without recording it in memory/decisions.md
+- Never assume a business rule without recording it in ./braddock/memory/decisions.md
 - Always maintain traceability: vision → PRD → spec → task → code
 
 ## Default pipeline
