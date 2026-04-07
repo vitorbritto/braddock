@@ -1,6 +1,5 @@
 <center>
 <img src="./assets/images/logo.png" width="400" />
-<h3>Braddock doesn't ask for a PRD. But you need one.</h3>
 </center>
 
 ## What is this?
@@ -8,6 +7,8 @@
 Remember Colonel James Braddock? The guy who walked into a hostile jungle alone — no written plan, no kickoff meeting, no slide deck — and came out with everything solved?
 
 Let's be honest: there's no other Braddock in the world, and there never will be. So here's a complete squad instead: defined roles, traceable artifacts, iron-clad governance, and a Kanban JSON that doesn't lie to anyone.
+
+> Braddock doesn't ask for a PRD. But you need one.
 
 ## Agents
 
