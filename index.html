@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Braddock — AI Squad Operating System</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #141414;
+      --border: #222;
+      --text: #e5e5e5;
+      --muted: #888;
+      --accent: #f5a623;
+      --accent-dim: rgba(245, 166, 35, 0.12);
+      --code-bg: #1a1a1a;
+      --radius: 8px;
+      --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Layout ── */
+    .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Header ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 64px 0 48px;
+      text-align: center;
+    }
+
+    header img { width: 420px; margin-bottom: 24px; }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── Sections ── */
+    section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+    section:last-child { border-bottom: none; }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3 .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    p { color: var(--muted); margin-bottom: 16px; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Code blocks ── */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-family: var(--mono);
+      font-size: 0.875rem;
+      color: var(--text);
+      overflow-x: auto;
+      position: relative;
+      margin: 16px 0;
+    }
+
+    .code-block .comment { color: #555; }
+    .code-block .cmd { color: #7ec8e3; }
+    .code-block .str { color: #a8d8a8; }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--border);
+      border: none;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .copy-btn:hover { background: #333; color: var(--text); }
+    .copy-btn.copied { color: var(--accent); }
+
+    /* ── Pipeline ── */
+    .pipeline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      align-items: center;
+      margin: 20px 0;
+    }
+
+    .pipeline-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 14px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .pipeline-arrow {
+      color: var(--muted);
+      font-size: 0.8rem;
+      padding: 0 8px;
+    }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; margin: 16px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 10px 16px;
+      border-bottom: 2px solid var(--border);
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    td code, th code {
+      font-family: var(--mono);
+      font-size: 0.85em;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    td.muted { color: var(--muted); }
+
+    /* ── Callout ── */
+    .callout {
+      background: var(--accent-dim);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin: 16px 0;
+    }
+
+    .callout strong { color: var(--accent); }
+
+    /* ── Prompt block ── */
+    .prompt-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      font-size: 0.875rem;
+      color: #ccc;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      margin: 16px 0;
+      position: relative;
+      font-family: var(--mono);
+    }
+
+    /* ── Rules ── */
+    .rules { list-style: none; }
+
+    .rules li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+      display: flex;
+      gap: 10px;
+    }
+
+    .rules li:last-child { border-bottom: none; }
+
+    .rules li::before {
+      content: '—';
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <img src="./assets/images/logo.png" alt="Braddock" />
+      <p>An AI squad operating system for Claude Code. Governance, pipeline, and memory — so your agents don't just yell in the jungle.</p>
+    </div>
+  </header>
+
+  <!-- Install -->
+  <section id="install">
+    <div class="container">
+      <h2>Getting Started</h2>
+
+      <!-- Step 1 -->
+      <h3><span class="step-num">1</span> Install Braddock in your project</h3>
+      <p>Run inside any existing project directory:</p>
+      <div class="code-block">
+        <button class="copy-btn" data-copy="npx @vitorbritto/braddock init">copy</button>
+        <span class="comment"># install in current directory</span><br/>
+        <span class="cmd">npx</span> @vitorbritto/braddock init<br/>
+        <br/>
+        <span class="comment"># or specify a path</span><br/>
+        <span class="cmd">npx</span> @vitorbritto/braddock init /path/to/your/project
+      </div>
+      <p>Braddock scaffolds a <code>.braddock/</code> and <code>.claude/</code> folder. Existing files are never overwritten.</p>
+
+      <!-- Step 2 -->
+      <h3 style="margin-top: 36px;"><span class="step-num">2</span> Define your product vision</h3>
+      <p>Open <code>.braddock/memory/vision.md</code> and describe what you're building. One paragraph is enough. Without this file, the squad has no mission.</p>
+      <div class="callout">
+        <strong>Tip:</strong> Be specific. The vision feeds the PRD, which feeds the spec, which feeds the code. Vague input = vague output.
+      </div>
+
+      <!-- Step 3 -->
+      <h3 style="margin-top: 36px;"><span class="step-num">3</span> Fire up the squad in Claude Code</h3>
+      <p>Open Claude Code in your project, paste the content of <code>.braddock/PROMPT.md</code> and hit enter. That's it — the squad initializes itself and runs the pipeline from there.</p>
+      <div class="code-block" style="padding-bottom: 20px; position: relative;">
+        <button class="copy-btn" data-copy="You are operating inside a virtual squad system called Braddock.
+
+Read first, in this order:
+- .claude/CLAUDE.md
+- .braddock/memory/vision.md
+- .braddock/memory/status.md
+
+Your mission is to initialize the project and prepare the squad for execution.
+
+Rules that cannot be broken:
+- Never skip steps in the pipeline
+- Never implement code before an approved PRD and spec exist
+- Never assume a business rule without recording it in .braddock/memory/decisions.md
+- Always maintain traceability: vision → PRD → spec → task → code
+
+Default pipeline:
+/kickoff → /create-prd → /create-spec → /breakdown-work → /implement-task → /review-delivery
+
+Start now with /kickoff.">copy</button>
+        <div class="prompt-block" style="background: none; border: none; padding: 0; margin: 0;">You are operating inside a virtual squad system called Braddock.
+
+Read first, in this order:
+- .claude/CLAUDE.md
+- .braddock/memory/vision.md
+- .braddock/memory/status.md
+
+Your mission is to initialize the project and prepare the squad for execution.
+
+Rules that cannot be broken:
+- Never skip steps in the pipeline
+- Never implement code before an approved PRD and spec exist
+- Never assume a business rule without recording it in .braddock/memory/decisions.md
+- Always maintain traceability: vision → PRD → spec → task → code
+
+Default pipeline:
+/kickoff → /create-prd → /create-spec → /breakdown-work → /implement-task → /review-delivery
+
+Start now with /kickoff.</div>
+      </div>
+      <p>From there, each skill points to the next when it finishes. The squad is self-guided.</p>
+    </div>
+  </section>
+
+  <!-- Pipeline -->
+  <section id="pipeline">
+    <div class="container">
+      <h2>Pipeline</h2>
+      <p>No mission starts in the middle. Each step produces an artifact that feeds the next.</p>
+      <div class="pipeline">
+        <span class="pipeline-step">/kickoff</span>
+        <span class="pipeline-arrow">→</span>
+        <span class="pipeline-step">/create-prd</span>
+        <span class="pipeline-arrow">→</span>
+        <span class="pipeline-step">/create-spec</span>
+        <span class="pipeline-arrow">→</span>
+        <span class="pipeline-step">/breakdown-work</span>
+        <span class="pipeline-arrow">→</span>
+        <span class="pipeline-step">/implement-task</span>
+        <span class="pipeline-arrow">→</span>
+        <span class="pipeline-step">/review-delivery</span>
+      </div>
+
+      <div class="table-wrap" style="margin-top: 24px;">
+        <table>
+          <thead>
+            <tr><th>Skill</th><th>What it does</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>/kickoff</code></td><td class="muted">Initializes the operation, prepares the ground</td></tr>
+            <tr><td><code>/create-prd</code></td><td class="muted">PM defines the mission objective</td></tr>
+            <tr><td><code>/create-spec</code></td><td class="muted">Tech Lead + Architect + UI/UX build the plan</td></tr>
+            <tr><td><code>/breakdown-work</code></td><td class="muted">Planner breaks into epics, stories, and small bets</td></tr>
+            <tr><td><code>/implement-task</code></td><td class="muted">Executes the next eligible task</td></tr>
+            <tr><td><code>/review-delivery</code></td><td class="muted">QA + Tech Lead validate what was delivered</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agents -->
+  <section id="agents">
+    <div class="container">
+      <h2>The Squad</h2>
+      <p>Each agent has a fixed role and never acts outside it.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Agent</th><th>Role</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>pm</code></td><td class="muted">Transforms vision into PRD</td></tr>
+            <tr><td><code>tech-lead</code></td><td class="muted">Architecture, trade-offs, risks</td></tr>
+            <tr><td><code>architect-specialist</code></td><td class="muted">Structure, modules, boundaries</td></tr>
+            <tr><td><code>backend-senior</code></td><td class="muted">Implements business rules</td></tr>
+            <tr><td><code>frontend-senior</code></td><td class="muted">Interface, flows, integration</td></tr>
+            <tr><td><code>ui-ux</code></td><td class="muted">Experience, clarity, conversion</td></tr>
+            <tr><td><code>planner</code></td><td class="muted">Breaks work into epics and tasks</td></tr>
+            <tr><td><code>qa</code></td><td class="muted">Validates, flags gaps, reviews</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code of Honor -->
+  <section id="rules">
+    <div class="container">
+      <h2>Code of Honor</h2>
+      <ul class="rules">
+        <li>Always read <code>.braddock/memory/</code> before taking any action.</li>
+        <li>Never implement before a PRD and spec exist.</li>
+        <li>Never assume a business rule without recording a decision.</li>
+        <li>Maintain traceability: vision → PRD → spec → task → code.</li>
+        <li>Before closing any step: validate consistency, flag risks, flag dependencies.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p><a href="https://github.com/vitorbritto/braddock" target="_blank">github.com/vitorbritto/braddock</a> &nbsp;·&nbsp; MIT License</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.dataset.copy;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = 'copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
