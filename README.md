@@ -1,6 +1,7 @@
-<center>
-<img src="./assets/images/logo.png" width="400" />
-</center>
+<div align="center">
+  <img src="./assets/images/logo.png" width="400" />
+</div>
+
 
 ## What is this?
 
@@ -87,7 +88,9 @@ your-project/
 
 ## Getting started
 
-<image src="./assets/images/help.png" />
+<div align="center">
+  <img src="./assets/images/help.png" />
+</div>
 
 ### 1. Install Braddock in your project
 
