@@ -1,0 +1,27 @@
+{
+  "name": "@vitorbritto/braddock",
+  "version": "1.0.0",
+  "description": "AI Squad template for Claude Code — from vision to code, no improvising.",
+  "keywords": ["claude-code", "ai-agents", "squad", "template", "prd", "spec"],
+  "homepage": "https://github.com/vitorbritto/braddock",
+  "license": "MIT",
+  "author": "Vitor Britto",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "braddock": "./bin/braddock.js"
+  },
+  "files": [
+    "bin",
+    "template"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.2.0",
+    "picocolors": "^1.1.1"
+  }
+}
