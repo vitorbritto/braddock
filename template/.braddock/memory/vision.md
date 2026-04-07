@@ -11,8 +11,8 @@ Describe the initial product idea here.
 ## Squad roles
 - Product Manager
 - Tech Lead
+- Architect Specialist
 - Backend Senior
-- Backend Architect
 - Frontend Senior
 - UI/UX Designer
 - QA
