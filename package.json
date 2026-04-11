@@ -2,7 +2,14 @@
   "name": "@vitorbritto/braddock",
   "version": "1.0.0",
   "description": "AI Squad template for Claude Code — from vision to code, no improvising.",
-  "keywords": ["claude-code", "ai-agents", "squad", "template", "prd", "spec"],
+  "keywords": [
+    "claude-code",
+    "ai-agents",
+    "squad",
+    "template",
+    "prd",
+    "spec"
+  ],
   "homepage": "https://github.com/vitorbritto/braddock",
   "license": "MIT",
   "author": "Vitor Britto",
@@ -20,8 +27,22 @@
   "engines": {
     "node": ">=20.0.0"
   },
+  "scripts": {
+    "dev": "parcel index.html",
+    "prebuild": "node scripts/optimize-images.js",
+    "build": "parcel build index.html --dist-dir dist --no-source-maps --public-url /",
+    "postbuild": "cp robots.txt sitemap.xml dist/ && cp assets/images/favicon.ico dist/",
+    "preview": "npx serve dist"
+  },
   "dependencies": {
     "@clack/prompts": "^1.2.0",
     "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@parcel/packager-raw-url": "^2.16.4",
+    "@parcel/transformer-jsonld": "^2.16.4",
+    "@parcel/transformer-webmanifest": "^2.16.4",
+    "parcel": "^2.15.1",
+    "sharp": "^0.34.1"
   }
 }
